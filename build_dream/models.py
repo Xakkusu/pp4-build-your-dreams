@@ -31,3 +31,23 @@ class BuildPost(models.Model):
 
     def __str__(self):
         return f"{self.title} | written by {self.author}"
+
+class Comment(models.Model):
+    """
+    Model to store a single comment entry related to :model:`auth.User`
+    and :model:`build_dream.BuildPost`. Needs to be approved
+    """
+    build_post = models.ForeignKey(BuildPost, on_delete=models.CASCADE,
+                             related_name="comments")
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="commenter")
+    comment_title = models.CharField(max_length=100, unique=True)
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    approved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["created_on"]
+
+    def __str__(self):
+        return f"Comment {self.body} by {self.author}"
